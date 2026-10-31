@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>pypsyScale 实验版 · 浏览器内 Python 引擎</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- 版本锁死：PyScript 是日历版本，升级需重跑 tests/run_shell_pyodide.mjs 与真浏览器验证 -->
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.7.3/core.css">
+  <script type="module" src="https://pyscript.net/releases/2026.7.3/core.js"></script>
+
+  <!-- 浏览器能力桥：纯 JS，只负责 IndexedDB 回调转 Promise、Plotly 挂载、下载与弹层收口，
+       不含任何量表语义与判定逻辑 -->
+  <script src="js/shim.js"></script>
+</head>
+<body>
+  <main class="shell stack">
+    <header class="card" style="display:flex;align-items:center;gap:12px;justify-content:space-between">
+      <span id="engine-badge" class="badge badge-engine">引擎启动中</span>
+      <a id="home-link" class="hint" href="index.html">← 换量表</a>
+    </header>
+
+    <div id="boot" class="boot-panel">
+      <div class="spinner"></div>
+      <p id="boot-text">正在准备 Python 运行时，首次加载体积较大，请稍候。</p>
+    </div>
+
+    <!-- 视图根节点：挂载后归 Python 独占，JS 不再往里写 -->
+    <section id="view" class="stack" hidden></section>
+
+    <dialog id="dialog" class="dialog-card">
+      <p id="dialog-text"></p>
+      <div class="btn-row">
+        <button id="dialog-yes" class="btn btn-primary" type="button"></button>
+        <button id="dialog-no" class="btn btn-ghost" type="button"></button>
+      </div>
+    </dialog>
+
+    <footer class="page-foot">
+      <p id="footer-note">本结果仅供参考，不构成医学诊断。如有疑虑请咨询专业人士。</p>
+      <p class="hint">引擎异常时可退回 <a href="https://hanguang-xingchen.github.io/psyScale/">psyScale 轻量版</a></p>
+    </footer>
+  </main>
+
+  <div id="py-error" hidden></div>
+
+  <script type="py" src="py/main.py" entry error="#py-error"></script>
+</body>
+</html>

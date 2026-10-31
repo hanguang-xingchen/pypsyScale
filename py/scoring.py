@@ -46,7 +46,7 @@ class ScoreResult:
 
     def json(self):
         return {
-            "scale_id": self.scale_id,
+            "scaleId": self.scale_id,
             "method": self.method,
             "language": self.language,
             "raw_total": self.raw_total,

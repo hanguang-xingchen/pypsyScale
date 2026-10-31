@@ -113,6 +113,58 @@ def band_position_figure(result, scale, *, t):
     return fig
 
 
+def radar_figure(dims, *, labels, values, levels=None, colors=None, min_value=1.0, max_value=5.0,
+                 threshold=None, title=None, hover_suffix=''):
+    """极坐标雷达：M2 的 SCL-90 十维图，提前在 WASM 里验证可行性。
+
+    dims/labels：维度名；values：各维因子均分；levels：各维等级文本（进 hover）。
+    闭合用首点重复；阈值环是一条恒定半径的虚线，不参与填充。
+    """
+    go = _require_plotly()
+    n = len(labels)
+    if n < 3:
+        raise ChartError(f"雷达图至少需要 3 个维度，实际 {n}")
+    if not (len(values) == n and (levels is None or len(levels) == n)):
+        raise ChartError("labels / values / levels 长度必须一致")
+
+    theta = list(labels) + [labels[0]]
+    r = [float(v) for v in values] + [float(values[0])]
+    hover = [f"<b>{lab}</b><br>{val:.2f}{hover_suffix}"
+             + (f"<br>{levels[i]}" if levels else "<extra></extra>")
+             for i, (lab, val) in enumerate(zip(labels, values))]
+    hover.append(hover[0])
+
+    data = [
+        go.Scatterpolar(
+            r=r, theta=theta, mode='lines+markers', fill='toself',
+            name=title or '', marker=dict(size=7),
+            line=dict(color='#f472b6', width=2),
+            fillcolor='rgba(244,114,182,0.15)',
+            hovertext=hover, hoverinfo='text',
+        )
+    ]
+    if threshold is not None:
+        data.append(go.Scatterpolar(
+            r=[threshold] * (n + 1), theta=theta, mode='lines',
+            name='阈值', line=dict(color='#9ca3af', width=1, dash='dot'), hoverinfo='skip',
+        ))
+
+    fig = go.Figure(data=data)
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(range=[min_value, max_value], dtick=1, gridcolor='#f3d3e2'),
+            angularaxis=dict(gridcolor='#f3d3e2'),
+        ),
+        showlegend=False,
+        margin=dict(l=54, r=54, t=44, b=44),
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(size=11),
+    )
+    if colors:
+        fig.data[0].marker.color = '#f472b6'  # 单色描边保持与主题一致，等级色走 hover
+    return fig
+
+
 def figure_to_json(fig):
     """序列化成页面侧 Plotly.newPlot(el, figure.data, figure.layout) 可直接消费的形状。"""
     try:

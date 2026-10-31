@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PHQ-9 抑郁症筛查 · pypsyScale 实验版</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <p class="badge badge-experimental">PyScript 实验版</p>
+      <h1>选一个量表开始</h1>
+      <p class="lede">这一页不加载任何 Python 运行时，点开就是秒开。真正的答题与计分在下一页的浏览器内引擎里完成。</p>
+    </header>
+
+    <section class="scale-list" id="scale-list">
+      <article class="scale-card">
+        <h2>PHQ-9 抑郁症筛查量表</h2>
+        <p class="scale-desc">用于筛查抑郁症状严重程度的自评量表，由 Spitzer 等人于 1999 年开发。</p>
+        <p class="scale-meta">9 题 · 单维度 · 最近两周</p>
+        <a class="btn btn-primary" href="app.html#/notice/phq-9?lang=zh-CN">开始答题</a>
+      </article>
+    </section>
+
+    <section class="notice-block">
+      <h2>这个实验版在验证什么</h2>
+      <ul class="dots">
+        <li>计分与解读由浏览器内的 Python（Pyodide / CPython 3.14 WASM）完成，不是 JavaScript</li>
+        <li>全部作答与结果只存在你这台设备的 IndexedDB 里，不上传任何服务器</li>
+        <li>首次进入需要下载运行时，体积在 10 MB 以上，手机流量下请先用 psyScale 轻量版</li>
+      </ul>
+      <p class="hint">语言：<a href="app.html#/notice/phq-9?lang=zh-CN">简体中文</a> · <a href="app.html#/notice/phq-9?lang=zh-TW">繁體中文</a></p>
+    </section>
+
+    <footer class="page-foot">
+      <p>本结果仅供参考，不构成医学诊断。如有疑虑请咨询专业人士。</p>
+    </footer>
+  </main>
+</body>
+</html>

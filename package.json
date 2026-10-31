@@ -1,20 +1,16 @@
 {
-  "name": "497c056965aa4f669afa618f11e45b0c",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
+  "name": "pysyscale",
+  "version": "0.1.0",
+  "private": true,
+  "description": "psyScale 的 PyScript 重构实验：浏览器内 Python 引擎 + Plotly 出图",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:engine": "python3 tests/run_tests.py",
+    "test:shell": "node tests/run_shell_pyodide.mjs",
+    "verify:plotly-wasm": "node tools/verify_plotly_wasm.mjs",
+    "serve": "python3 -m http.server 8080"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "pyodide": "^314.0.7"
+    "fake-indexeddb": "^6.2.5",
+    "pyodide": "314.0.7"
   }
 }
