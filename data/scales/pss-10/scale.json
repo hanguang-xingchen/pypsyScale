@@ -1,0 +1,90 @@
+{
+  "schema": 2,
+  "id": "pss-10",
+  "title": {
+    "zh-CN": "PSS-10 感知压力量表",
+    "zh-TW": "PSS-10 知覺壓力量表"
+  },
+  "description": {
+    "zh-CN": "用于评估个体对生活中压力源感知程度的简短量表，由 Cohen 等人开发",
+    "zh-TW": "用於評估個體對生活中壓力源知覺程度的簡短量表，由 Cohen 等人開發"
+  },
+  "instruction": {
+    "zh-CN": "在过去一个月中，你有多频繁地有以下感受或想法？请选择最符合你情况的选项。",
+    "zh-TW": "在過去一個月內，你有多頻繁地有以下感受或想法？請選擇最符合你情況的選項。"
+  },
+  "meta": {
+    "author": "Cohen, Kamarck, Mermelstein",
+    "year": 1983,
+    "optionCount": 5
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 10
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.0,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 0,
+      "max": 13,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "低压力",
+        "zh-TW": "低壓力"
+      },
+      "advice": {
+        "zh-CN": "感知压力水平较低，继续保持良好的应对方式。",
+        "zh-TW": "知覺壓力水平較低，繼續保持良好的應對方式。"
+      }
+    },
+    {
+      "min": 14,
+      "max": 26,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "中等压力",
+        "zh-TW": "中等壓力"
+      },
+      "advice": {
+        "zh-CN": "感知压力处于中等水平，可以尝试放松技巧如深呼吸、冥想等来缓解。",
+        "zh-TW": "知覺壓力處於中等水平，可以嘗試放鬆技巧如深呼吸、冥想等來緩解。"
+      }
+    },
+    {
+      "min": 27,
+      "max": 40,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "高压力",
+        "zh-TW": "高壓力"
+      },
+      "advice": {
+        "zh-CN": "感知压力较高，建议调整生活节奏，必要时寻求专业支持。",
+        "zh-TW": "知覺壓力較高，建議調整生活節奏，必要時尋求專業支持。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "pss-10 粗分即报告分，raw_factor=1.0"
+    ]
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "schema": 2,
+  "id": "sas",
+  "title": {
+    "zh-CN": "SAS 焦虑自评量表",
+    "zh-TW": "SAS 焦慮自評量表"
+  },
+  "description": {
+    "zh-CN": "用于评估焦虑症状严重程度的自评量表，由 Zung 于 1971 年编制，广泛用于临床和科研场景",
+    "zh-TW": "用於評估焦慮症狀嚴重程度的自評量表，由 Zung 於 1971 年編製，廣泛用於臨床和科研場景"
+  },
+  "instruction": {
+    "zh-CN": "以下描述的是人们有时会有的一些感受。请根据你在过去一周内的实际情况，选择最符合每个感受出现频率的选项。",
+    "zh-TW": "以下描述的是人們有時會有的一些感受。請根據你在過去一週內的實際情況，選擇最符合每個感受出現頻率的答案。"
+  },
+  "meta": {
+    "author": "Zung",
+    "year": 1971,
+    "optionCount": 4
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 20
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.25,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 20,
+      "max": 39,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "没有焦虑",
+        "zh-TW": "沒有焦慮"
+      },
+      "advice": {
+        "zh-CN": "目前没有明显焦虑症状，继续保持良好的生活状态。",
+        "zh-TW": "目前沒有明顯焦慮症狀，繼續保持良好的生活狀態。"
+      }
+    },
+    {
+      "min": 40,
+      "max": 49,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "轻度焦虑",
+        "zh-TW": "輕度焦慮"
+      },
+      "advice": {
+        "zh-CN": "存在轻度焦虑症状，建议关注情绪变化，适当放松和运动。",
+        "zh-TW": "存在輕度焦慮症狀，建議關注情緒變化，適當放鬆和運動。"
+      }
+    },
+    {
+      "min": 50,
+      "max": 59,
+      "color": "#f44336",
+      "level": {
+        "zh-CN": "中度焦虑",
+        "zh-TW": "中度焦慮"
+      },
+      "advice": {
+        "zh-CN": "存在中度焦虑症状，建议尽快咨询心理健康专业人士。",
+        "zh-TW": "存在中度焦慮症狀，建議盡快諮詢心理健康專業人士。"
+      }
+    },
+    {
+      "min": 60,
+      "max": 80,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "重度焦虑",
+        "zh-TW": "重度焦慮"
+      },
+      "advice": {
+        "zh-CN": "存在重度焦虑症状，请立即寻求专业医疗帮助。",
+        "zh-TW": "存在重度焦慮症狀，請立即尋求專業醫療協助。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "sas 标准分=粗分×1.25"
+    ]
+  }
+}

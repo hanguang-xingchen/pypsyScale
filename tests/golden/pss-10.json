@@ -1,0 +1,139 @@
+{
+  "scale_id": "pss-10",
+  "generated_by": "tools/import_psyscale.py",
+  "score_range": [
+    0,
+    40,
+    1.0
+  ],
+  "cases": [
+    {
+      "name": "band0-0",
+      "answers": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 0
+    },
+    {
+      "name": "band0-13",
+      "answers": [
+        4,
+        4,
+        4,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 0
+    },
+    {
+      "name": "band1-26",
+      "answers": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        2,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 1
+    },
+    {
+      "name": "band1-14",
+      "answers": [
+        4,
+        4,
+        4,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 1
+    },
+    {
+      "name": "band2-40",
+      "answers": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "expect_band": 2
+    },
+    {
+      "name": "band2-27",
+      "answers": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 2
+    },
+    {
+      "name": "edge-12",
+      "answers": [
+        4,
+        4,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 0
+    },
+    {
+      "name": "edge-25",
+      "answers": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        1,
+        0,
+        0,
+        0
+      ],
+      "expect_band": 1
+    }
+  ]
+}

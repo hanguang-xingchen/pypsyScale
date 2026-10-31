@@ -1,0 +1,103 @@
+{
+  "schema": 2,
+  "id": "ces-d",
+  "title": {
+    "zh-CN": "CES-D 流调中心抑郁量表",
+    "zh-TW": "CES-D 流行病學研究中心抑鬱量表"
+  },
+  "description": {
+    "zh-CN": "用于筛查抑郁症状的自评量表，由 Radloff 于 1977 年开发，广泛用于流行病学调查",
+    "zh-TW": "用於篩檢抑鬱症狀的自評量表，由 Radloff 於 1977 年開發，廣泛用於流行病學調查"
+  },
+  "instruction": {
+    "zh-CN": "以下描述的是人们有时会有的一些感受。请根据你在过去一周内的实际情况，选择最符合每个感受出现频率的选项。",
+    "zh-TW": "以下描述的是人們有時會有的一些感受。請根據你在過去一週內的實際情況，選擇最符合每個感受出現頻率的選項。"
+  },
+  "meta": {
+    "author": "Radloff",
+    "year": 1977,
+    "optionCount": 4
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 20
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.0,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 0,
+      "max": 15,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "没有抑郁",
+        "zh-TW": "沒有抑鬱"
+      },
+      "advice": {
+        "zh-CN": "目前没有明显抑郁症状，继续保持良好的生活状态。",
+        "zh-TW": "目前沒有明顯抑鬱症狀，繼續保持良好的生活狀態。"
+      }
+    },
+    {
+      "min": 16,
+      "max": 20,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "轻度抑郁",
+        "zh-TW": "輕度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在轻度抑郁症状，建议关注情绪变化，适当运动和社交。",
+        "zh-TW": "存在輕度抑鬱症狀，建議關注情緒變化，適當運動和社交。"
+      }
+    },
+    {
+      "min": 21,
+      "max": 25,
+      "color": "#f44336",
+      "level": {
+        "zh-CN": "中度抑郁",
+        "zh-TW": "中度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在中度抑郁症状，建议尽快咨询心理健康专业人士。",
+        "zh-TW": "存在中度抑鬱症狀，建議儘快諮詢心理健康專業人士。"
+      }
+    },
+    {
+      "min": 26,
+      "max": 60,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "重度抑郁",
+        "zh-TW": "重度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在重度抑郁症状，请尽快寻求专业医疗帮助。",
+        "zh-TW": "存在重度抑鬱症狀，請儘快尋求專業醫療協助。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "ces-d 粗分即报告分，raw_factor=1.0"
+    ]
+  }
+}

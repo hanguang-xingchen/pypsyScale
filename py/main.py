@@ -54,7 +54,9 @@ async def bootstrap():
 
 try:
     await bootstrap()
-    import shell as _shell  # noqa: E402
+    # 必须在 bootstrap 完成后动态导入，否则 shell.py 的顶层 import 会在 /psy 准备好之前触发
+    import importlib
+    _shell = importlib.import_module('shell')
 
     app = _shell.Shell()
     await app.start()

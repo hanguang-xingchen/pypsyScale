@@ -1,0 +1,103 @@
+{
+  "schema": 2,
+  "id": "ses",
+  "title": {
+    "zh-CN": "Rosenberg 自尊量表",
+    "zh-TW": "Rosenberg 自尊量表"
+  },
+  "description": {
+    "zh-CN": "由 Morris Rosenberg 于 1965 年开发的自尊测量工具，广泛用于心理学研究和临床实践，属于公共领域",
+    "zh-TW": "由 Morris Rosenberg 於 1965 年開發的自尊測量工具，廣泛用於心理學研究和臨床實務，屬於公共領域"
+  },
+  "instruction": {
+    "zh-CN": "请根据你对自己的实际情况，选择最符合每个陈述的选项。",
+    "zh-TW": "請根據你對自己的實際情況，選擇最符合每個陳述的選項。"
+  },
+  "meta": {
+    "author": "Morris Rosenberg",
+    "year": 1965,
+    "optionCount": 4
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 10
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.0,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 0,
+      "max": 10,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "自尊水平较低",
+        "zh-TW": "自尊水平較低"
+      },
+      "advice": {
+        "zh-CN": "自尊水平较低，可能经常对自己感到不满意。建议关注自己的优点和成就，必要时寻求专业支持。",
+        "zh-TW": "自尊水平較低，可能經常對自己感到不滿意。建議關注自己的優點和成就，必要時尋求專業支持。"
+      }
+    },
+    {
+      "min": 11,
+      "max": 20,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "自尊水平一般",
+        "zh-TW": "自尊水平一般"
+      },
+      "advice": {
+        "zh-CN": "自尊水平处于中等，有时对自己满意，有时不太满意。可以尝试多肯定自己，培养积极的自我对话。",
+        "zh-TW": "自尊水平處於中等，有時對自己滿意，有時不太滿意。可以嘗試多肯定自己，培養積極的自我對話。"
+      }
+    },
+    {
+      "min": 21,
+      "max": 25,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "自尊水平良好",
+        "zh-TW": "自尊水平良好"
+      },
+      "advice": {
+        "zh-CN": "自尊水平良好，对自己有基本的肯定态度。继续保持积极的自我认知。",
+        "zh-TW": "自尊水平良好，對自己有基本的肯定態度。繼續保持積極的自我認知。"
+      }
+    },
+    {
+      "min": 26,
+      "max": 30,
+      "color": "#2e7d32",
+      "level": {
+        "zh-CN": "自尊水平很高",
+        "zh-TW": "自尊水平很高"
+      },
+      "advice": {
+        "zh-CN": "自尊水平很高，对自己有充分的信心和接纳。继续维持这种积极的自我状态。",
+        "zh-TW": "自尊水平很高，對自己有充分的信心和接納。繼續維持這種積極的自我狀態。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "ses 粗分即报告分，raw_factor=1.0"
+    ]
+  }
+}

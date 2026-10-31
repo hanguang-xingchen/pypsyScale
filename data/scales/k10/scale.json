@@ -1,0 +1,103 @@
+{
+  "schema": 2,
+  "id": "k10",
+  "title": {
+    "zh-CN": "K10 心理困扰量表",
+    "zh-TW": "K10 心理困擾量表"
+  },
+  "description": {
+    "zh-CN": "用于筛查非特异性心理困扰的简短自评量表，由 Kessler 等人开发，广泛用于公共卫生调查",
+    "zh-TW": "用於篩檢非特異性心理困擾的簡短自評量表，由 Kessler 等人開發，廣泛用於公共衛生調查"
+  },
+  "instruction": {
+    "zh-CN": "在过去 30 天内，你有多频繁地经历以下感受？请选择最符合你情况的选项。",
+    "zh-TW": "在過去 30 天內，你有多頻繁地經歷以下感受？請選擇最符合你情況的選項。"
+  },
+  "meta": {
+    "author": "Kessler et al.",
+    "year": 2002,
+    "optionCount": 5
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 10
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.0,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 10,
+      "max": 19,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "低困扰",
+        "zh-TW": "低困擾"
+      },
+      "advice": {
+        "zh-CN": "心理困扰水平较低，继续保持良好的生活状态。",
+        "zh-TW": "心理困擾水平較低，繼續保持良好的生活狀態。"
+      }
+    },
+    {
+      "min": 20,
+      "max": 24,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "轻度困扰",
+        "zh-TW": "輕度困擾"
+      },
+      "advice": {
+        "zh-CN": "存在轻度心理困扰，建议适当关注自己的情绪变化。",
+        "zh-TW": "存在輕度心理困擾，建議適當關注自己的情緒變化。"
+      }
+    },
+    {
+      "min": 25,
+      "max": 29,
+      "color": "#f44336",
+      "level": {
+        "zh-CN": "中度困扰",
+        "zh-TW": "中度困擾"
+      },
+      "advice": {
+        "zh-CN": "存在中度心理困扰，建议咨询心理健康专业人士。",
+        "zh-TW": "存在中度心理困擾，建議諮詢心理健康專業人士。"
+      }
+    },
+    {
+      "min": 30,
+      "max": 50,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "重度困扰",
+        "zh-TW": "重度困擾"
+      },
+      "advice": {
+        "zh-CN": "心理困扰程度较高，请尽快寻求专业医疗帮助。",
+        "zh-TW": "心理困擾程度較高，請儘快尋求專業醫療協助。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "k10 粗分即报告分，raw_factor=1.0"
+    ]
+  }
+}

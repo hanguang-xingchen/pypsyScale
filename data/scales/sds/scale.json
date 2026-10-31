@@ -1,0 +1,103 @@
+{
+  "schema": 2,
+  "id": "sds",
+  "title": {
+    "zh-CN": "SDS 抑郁自评量表",
+    "zh-TW": "SDS 抑鬱自評量表"
+  },
+  "description": {
+    "zh-CN": "用于评估抑郁症状严重程度的自评量表，由 Zung 于 1965 年编制，广泛用于临床筛查和疗效评估",
+    "zh-TW": "用於評估抑鬱症狀嚴重程度的自評量表，由 Zung 於 1965 年編製，廣泛用於臨床篩查和療效評估"
+  },
+  "instruction": {
+    "zh-CN": "以下描述的是人们有时会有的一些感受。请根据你在过去一周内的实际情况，选择最符合每个感受出现频率的选项。",
+    "zh-TW": "以下描述的是人們有時會有的一些感受。請根據你在過去一週內的實際情況，選擇最符合每個感受出現頻率的答案。"
+  },
+  "meta": {
+    "author": "Zung",
+    "year": 1965,
+    "optionCount": 4
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 20
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.25,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 20,
+      "max": 42,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "没有抑郁",
+        "zh-TW": "沒有抑鬱"
+      },
+      "advice": {
+        "zh-CN": "目前没有明显抑郁症状，继续保持良好的生活状态。",
+        "zh-TW": "目前沒有明顯抑鬱症狀，繼續保持良好的生活狀態。"
+      }
+    },
+    {
+      "min": 43,
+      "max": 52,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "轻度抑郁",
+        "zh-TW": "輕度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在轻度抑郁症状，建议关注情绪变化，适当运动和社交。",
+        "zh-TW": "存在輕度抑鬱症狀，建議關注情緒變化，適當運動和社交。"
+      }
+    },
+    {
+      "min": 53,
+      "max": 62,
+      "color": "#f44336",
+      "level": {
+        "zh-CN": "中度抑郁",
+        "zh-TW": "中度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在中度抑郁症状，建议尽快咨询心理健康专业人士。",
+        "zh-TW": "存在中度抑鬱症狀，建議盡快諮詢心理健康專業人士。"
+      }
+    },
+    {
+      "min": 63,
+      "max": 80,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "重度抑郁",
+        "zh-TW": "重度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在重度抑郁症状，请立即寻求专业医疗帮助。",
+        "zh-TW": "存在重度抑鬱症狀，請立即尋求專業醫療協助。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "sds 标准分=粗分×1.25"
+    ]
+  }
+}

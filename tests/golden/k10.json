@@ -1,0 +1,187 @@
+{
+  "scale_id": "k10",
+  "generated_by": "tools/import_psyscale.py",
+  "score_range": [
+    10,
+    50,
+    1.0
+  ],
+  "cases": [
+    {
+      "name": "band0-10",
+      "answers": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 0
+    },
+    {
+      "name": "band0-19",
+      "answers": [
+        5,
+        5,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 0
+    },
+    {
+      "name": "band1-24",
+      "answers": [
+        5,
+        5,
+        5,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 1
+    },
+    {
+      "name": "band1-20",
+      "answers": [
+        5,
+        5,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 1
+    },
+    {
+      "name": "band2-25",
+      "answers": [
+        5,
+        5,
+        5,
+        4,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 2
+    },
+    {
+      "name": "band2-29",
+      "answers": [
+        5,
+        5,
+        5,
+        5,
+        4,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 2
+    },
+    {
+      "name": "band3-50",
+      "answers": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "expect_band": 3
+    },
+    {
+      "name": "band3-30",
+      "answers": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 3
+    },
+    {
+      "name": "edge-18",
+      "answers": [
+        5,
+        5,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 0
+    },
+    {
+      "name": "edge-23",
+      "answers": [
+        5,
+        5,
+        5,
+        2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 1
+    },
+    {
+      "name": "edge-28",
+      "answers": [
+        5,
+        5,
+        5,
+        5,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "expect_band": 2
+    }
+  ]
+}
