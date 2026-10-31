@@ -1,0 +1,117 @@
+{
+  "schema": 2,
+  "id": "phq-9",
+  "title": {
+    "zh-CN": "PHQ-9 抑郁症筛查量表",
+    "zh-TW": "PHQ-9 抑鬱症篩檢量表"
+  },
+  "description": {
+    "zh-CN": "用于筛查抑郁症状严重程度的自评量表，由 Spitzer 等人于 1999 年开发",
+    "zh-TW": "用於篩檢抑鬱症狀嚴重程度的自評量表，由 Spitzer 等人於 1999 年開發"
+  },
+  "instruction": {
+    "zh-CN": "在过去两周内，以下问题困扰您的频率是？请选择最符合您情况的选项。",
+    "zh-TW": "在過去兩週內，以下問題困擾您的頻率是？請選擇最符合您情況的選項。"
+  },
+  "meta": {
+    "author": "Spitzer, Kroenke, Williams",
+    "year": 1999,
+    "optionCount": 4
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 9
+  },
+  "scoring": {
+    "method": "sum",
+    "interval": "closed",
+    "transform": {
+      "raw_factor": 1.0,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 0,
+      "max": 4,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "没有抑郁",
+        "zh-TW": "沒有抑鬱"
+      },
+      "advice": {
+        "zh-CN": "目前没有明显抑郁症状，保持良好的生活习惯即可。",
+        "zh-TW": "目前沒有明顯抑鬱症狀，保持良好的生活習慣即可。"
+      }
+    },
+    {
+      "min": 5,
+      "max": 9,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "轻度抑郁",
+        "zh-TW": "輕度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在轻度抑郁症状，建议关注情绪变化，适当运动和社交。",
+        "zh-TW": "存在輕度抑鬱症狀，建議關注情緒變化，適當運動和社交。"
+      }
+    },
+    {
+      "min": 10,
+      "max": 14,
+      "color": "#f44336",
+      "level": {
+        "zh-CN": "中度抑郁",
+        "zh-TW": "中度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在中度抑郁症状，建议尽快咨询心理健康专业人士。",
+        "zh-TW": "存在中度抑鬱症狀，建議儘快諮詢心理健康專業人士。"
+      }
+    },
+    {
+      "min": 15,
+      "max": 19,
+      "color": "#d32f2f",
+      "level": {
+        "zh-CN": "中重度抑郁",
+        "zh-TW": "中重度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在中重度抑郁症状，强烈建议尽快就医。",
+        "zh-TW": "存在中重度抑鬱症狀，強烈建議儘快就醫。"
+      }
+    },
+    {
+      "min": 20,
+      "max": 27,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "重度抑郁",
+        "zh-TW": "重度抑鬱"
+      },
+      "advice": {
+        "zh-CN": "存在重度抑郁症状，请立即寻求专业医疗帮助。",
+        "zh-TW": "存在重度抑鬱症狀，請立即尋求專業醫療協助。"
+      }
+    }
+  ],
+  "flags": [],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-10-31",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "PHQ-9 第9题阳性（≥1）需触发求助提示，本切片先在 flags 留位，文案待与热线信息一并核实",
+      "PHQ-9 粗分即报告分，raw_factor=1.0"
+    ]
+  }
+}
