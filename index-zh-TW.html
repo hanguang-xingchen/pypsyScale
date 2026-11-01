@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>pypsyScale 實驗版 · 心理學多量表評估</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="page-head">
+      <p class="badge badge-experimental">PyScript 實驗版</p>
+      <h1>選一個量表開始</h1>
+      <p class="lede">這一頁不載入任何 Python 執行時，點開就是秒開。真正的答題與計分在下一頁的瀏覽器內引擎裡完成。</p>
+    </header>
+
+    <section class="scale-list" id="scale-list">
+      <article class="scale-card">
+        <h2>PHQ-9 抑鬱症篩檢量表</h2>
+        <p class="scale-desc">用於篩檢抑鬱症狀嚴重程度的自評量表，由 Spitzer 等人於 1999 年開發</p>
+        <p class="scale-meta">9 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/phq-9?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>GAD-7 廣泛性焦慮量表</h2>
+        <p class="scale-desc">用於篩檢廣泛性焦慮障礙的簡短自評量表，由 Spitzer 等人於 2006 年開發</p>
+        <p class="scale-meta">7 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/gad-7?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>CES-D 流行病學研究中心抑鬱量表</h2>
+        <p class="scale-desc">用於篩檢抑鬱症狀的自評量表，由 Radloff 於 1977 年開發，廣泛用於流行病學調查</p>
+        <p class="scale-meta">20 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/ces-d?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>WHO-5 幸福感指數</h2>
+        <p class="scale-desc">由世界衛生組織開發的簡短幸福感評估工具，用於測量主觀心理健康狀態</p>
+        <p class="scale-meta">5 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/who-5?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>K10 心理困擾量表</h2>
+        <p class="scale-desc">用於篩檢非特異性心理困擾的簡短自評量表，由 Kessler 等人開發，廣泛用於公共衛生調查</p>
+        <p class="scale-meta">10 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/k10?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>PSS-10 知覺壓力量表</h2>
+        <p class="scale-desc">用於評估個體對生活中壓力源知覺程度的簡短量表，由 Cohen 等人開發</p>
+        <p class="scale-meta">10 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/pss-10?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>Rosenberg 自尊量表</h2>
+        <p class="scale-desc">由 Morris Rosenberg 於 1965 年開發的自尊測量工具，廣泛用於心理學研究和臨床實務，屬於公共領域</p>
+        <p class="scale-meta">10 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/ses?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>SAS 焦慮自評量表</h2>
+        <p class="scale-desc">用於評估焦慮症狀嚴重程度的自評量表，由 Zung 於 1971 年編製，廣泛用於臨床和科研場景</p>
+        <p class="scale-meta">20 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/sas?lang=zh-TW">開始作答</a>
+      </article>
+      <article class="scale-card">
+        <h2>SDS 抑鬱自評量表</h2>
+        <p class="scale-desc">用於評估抑鬱症狀嚴重程度的自評量表，由 Zung 於 1965 年編製，廣泛用於臨床篩查和療效評估</p>
+        <p class="scale-meta">20 題 · 單維度</p>
+        <a class="btn btn-primary" href="app.html#/notice/sds?lang=zh-TW">開始作答</a>
+      </article>
+    </section>
+
+    <section class="notice-block">
+      <h2>這個實驗版在驗證什麼</h2>
+      <ul class="dots">
+        <li>計分與解讀由瀏覽器內的 Python（Pyodide / CPython 3.14 WASM）完成，不是 JavaScript</li>
+        <li>全部作答與結果只存在你這臺裝置的 IndexedDB 裡，不上傳任何伺服器</li>
+        <li>首次進入需要下載執行時，體積在 10 MB 以上，手機流量下請先用 psyScale 輕量版</li>
+      </ul>
+      <p class="hint">語言：<a href="index.html">簡體中文</a> · 繁體中文</p>
+    </section>
+
+    <footer class="page-foot">
+      <p>本結果僅供參考，不構成醫學診斷。如有疑慮請諮詢專業人士。</p>
+    </footer>
+  </main>
+</body>
+</html>

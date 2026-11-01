@@ -50,15 +50,6 @@ async def bootstrap():
         pathlib.Path(f'{INSTALL_DIR}/{name}.py').write_text(source, encoding='utf-8')
     if INSTALL_DIR not in sys.path:
         sys.path.insert(0, INSTALL_DIR)
-    
-    # 加载 micropip（用于后续安装 plotly）
-    try:
-        from pyodide.ffi import to_js
-        import pyodide_js
-        await pyodide_js.loadPackage(to_js(['micropip']))
-    except Exception as exc:
-        _announce(f"加载 micropip 失败：{exc}", 'error')
-        raise
 
 
 try:
