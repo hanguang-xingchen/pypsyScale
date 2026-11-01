@@ -55,6 +55,22 @@ def validate(scale, *, score_min=None, score_max=None, step=None):
     interval = scoring.get("interval")
     if interval not in INTERVALS:
         raise ScaleSchemaError(f"scoring.interval 必须是 {INTERVALS} 之一，实际 {interval!r}")
+    
+    # dimension_sum 必须有 factors 字段
+    if scoring.get("method") == "dimension_sum":
+        if "factors" not in scale:
+            raise ScaleSchemaError("dimension_sum 计分方法必须有 factors 字段")
+        factors = scale["factors"]
+        if not isinstance(factors, list) or len(factors) == 0:
+            raise ScaleSchemaError("factors 必须是非空数组")
+        for i, factor in enumerate(factors):
+            if "code" not in factor:
+                raise ScaleSchemaError(f"factors[{i}] 缺少 code 字段")
+            if "name" not in factor:
+                raise ScaleSchemaError(f"factors[{i}] 缺少 name 字段")
+            if "expectedCount" not in factor:
+                raise ScaleSchemaError(f"factors[{i}] 缺少 expectedCount 字段")
+            _check_localized(factor["name"], f"factors[{i}].name")
 
     bands = scale["bands"]
     if not bands:
@@ -94,7 +110,8 @@ def validate(scale, *, score_min=None, score_max=None, step=None):
         raise ScaleSchemaError(f"值域下界未覆盖：可能最低分 {score_min}，首档 min={bands[0]['min']}")
     if score_max is not None:
         last = bands[-1]
-        limit = last["max"] if interval == "closed" else float("inf")
+        # 最后一档可以是闭区间（包含 max），也可以是半开区间（但 max 必须 >= score_max）
+        limit = last["max"]
         if score_max > limit:
             raise ScaleSchemaError(f"值域上界未覆盖：可能最高分 {score_max}，末档 max={last['max']}")
 

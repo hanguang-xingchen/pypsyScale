@@ -1,0 +1,185 @@
+{
+  "schema": 2,
+  "id": "scl-90",
+  "title": {
+    "zh-CN": "SCL-90 症状自评量表",
+    "zh-TW": "SCL-90 症狀自評量表"
+  },
+  "description": {
+    "zh-CN": "广泛用于心理健康评估的自评量表，涵盖9个症状维度及睡眠饮食等附加项目",
+    "zh-TW": "廣泛用於心理健康評估的自評量表，涵蓋 9 個症狀構面及睡眠飲食等附加項目"
+  },
+  "instruction": {
+    "zh-CN": "请根据您最近一周（包括今天）的实际感受，选择最符合您情况的选项。",
+    "zh-TW": "請根據您最近一週（包括今天）的實際感受，選擇最符合您情況的選項。"
+  },
+  "meta": {
+    "author": "Derogatis et al.",
+    "year": 1973,
+    "optionCount": 5
+  },
+  "items": {
+    "files": {
+      "zh-CN": "items.zh-CN.csv",
+      "zh-TW": "items.zh-TW.csv"
+    },
+    "option_prefix": "opt_",
+    "value_prefix": "val_",
+    "count": 90
+  },
+  "scoring": {
+    "method": "dimension_sum",
+    "interval": "half_open",
+    "transform": {
+      "raw_factor": 1.0,
+      "report_round": 0
+    }
+  },
+  "bands": [
+    {
+      "min": 1.0,
+      "max": 2.0,
+      "color": "#4caf50",
+      "level": {
+        "zh-CN": "正常",
+        "zh-TW": "正常"
+      },
+      "advice": {
+        "zh-CN": "该维度指标在正常范围内，继续保持良好的心理状态。",
+        "zh-TW": "該構面指標在正常範圍內，繼續保持良好的心理狀態。"
+      }
+    },
+    {
+      "min": 2.0,
+      "max": 3.0,
+      "color": "#ff9800",
+      "level": {
+        "zh-CN": "轻度",
+        "zh-TW": "輕度"
+      },
+      "advice": {
+        "zh-CN": "该维度存在轻度症状，建议关注相关情绪变化，适当调整生活节奏。",
+        "zh-TW": "該構面存在輕度症狀，建議關注相關情緒變化，適當調整生活節奏。"
+      }
+    },
+    {
+      "min": 3.0,
+      "max": 4.0,
+      "color": "#f44336",
+      "level": {
+        "zh-CN": "中度",
+        "zh-TW": "中度"
+      },
+      "advice": {
+        "zh-CN": "该维度存在中度症状，建议尽快咨询心理健康专业人士。",
+        "zh-TW": "該構面存在中度症狀，建議儘快諮詢心理健康專業人士。"
+      }
+    },
+    {
+      "min": 4.0,
+      "max": 5.0,
+      "color": "#b71c1c",
+      "level": {
+        "zh-CN": "重度",
+        "zh-TW": "重度"
+      },
+      "advice": {
+        "zh-CN": "该维度症状较重，请尽快寻求专业医疗帮助。",
+        "zh-TW": "該構面症狀較重，請儘快尋求專業醫療協助。"
+      }
+    }
+  ],
+  "flags": [],
+  "factors": [
+    {
+      "code": "somatization",
+      "name": {
+        "zh-CN": "躯体化",
+        "zh-TW": "身體化"
+      },
+      "expectedCount": 12
+    },
+    {
+      "code": "anxiety",
+      "name": {
+        "zh-CN": "焦虑",
+        "zh-TW": "焦慮"
+      },
+      "expectedCount": 9
+    },
+    {
+      "code": "obsessive",
+      "name": {
+        "zh-CN": "强迫",
+        "zh-TW": "強迫"
+      },
+      "expectedCount": 10
+    },
+    {
+      "code": "depression",
+      "name": {
+        "zh-CN": "抑郁",
+        "zh-TW": "抑鬱"
+      },
+      "expectedCount": 13
+    },
+    {
+      "code": "interpersonal",
+      "name": {
+        "zh-CN": "人际敏感",
+        "zh-TW": "人際敏感"
+      },
+      "expectedCount": 9
+    },
+    {
+      "code": "psychoticism",
+      "name": {
+        "zh-CN": "精神病性",
+        "zh-TW": "精神病性"
+      },
+      "expectedCount": 11
+    },
+    {
+      "code": "paranoid",
+      "name": {
+        "zh-CN": "偏执",
+        "zh-TW": "偏執"
+      },
+      "expectedCount": 6
+    },
+    {
+      "code": "hostility",
+      "name": {
+        "zh-CN": "敌对",
+        "zh-TW": "敵對"
+      },
+      "expectedCount": 6
+    },
+    {
+      "code": "phobic",
+      "name": {
+        "zh-CN": "恐怖",
+        "zh-TW": "恐怖"
+      },
+      "expectedCount": 7
+    },
+    {
+      "code": "additional",
+      "name": {
+        "zh-CN": "其他",
+        "zh-TW": "其他"
+      },
+      "expectedCount": 7
+    }
+  ],
+  "provenance": {
+    "source_project": "psyScale",
+    "source_snapshot": "vendor/psyscale-ref",
+    "source_commit": "15195ba5",
+    "imported_at": "2026-11-01",
+    "imported_by": "tools/import_psyscale.py",
+    "review_notes": [
+      "SCL-90 多维度量表，10 因子，因子归属沿用 psyScale"
+    ]
+  }
+}

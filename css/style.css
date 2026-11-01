@@ -105,3 +105,22 @@ body {
   .score-big { font-size: 44px; }
   .meta-grid { gap: 16px; }
 }
+
+/* 因子明细表 */
+.factor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+.factor-table th, .factor-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.factor-table th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+.factor-table tr:last-child td {
+  border-bottom: none;
+}

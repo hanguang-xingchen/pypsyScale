@@ -329,26 +329,90 @@ class Shell:
 
     async def render_charts(self, root, scale, items, payload):
         holder = dom.h('div', cls='card stack')
-        dom.add(holder, dom.h('h2', text=self.t('chart_item_title')))
-        plotly_node = dom.h('div', cls='chart-holder', el_id='chart-items')
-        band_node = dom.h('div', cls='chart-holder', el_id='chart-band')
-        dom.add(holder, plotly_node, band_node)
-        dom.add(root, holder)
-        self.chart_nodes.extend([plotly_node, band_node])
+        
+        # 多维度量表渲染雷达图 + 因子明细表
+        if scale['scoring']['method'] == 'dimension_sum':
+            dom.add(holder, dom.h('h2', text=self.t('chart_radar_title', default='因子雷达图')))
+            radar_node = dom.h('div', cls='chart-holder', el_id='chart-radar')
+            dom.add(holder, radar_node)
+            self.chart_nodes.append(radar_node)
+            
+            # 因子明细表
+            dom.add(holder, dom.h('h2', text=self.t('chart_factor_title', default='因子明细')))
+            table = dom.h('table', cls='factor-table')
+            thead = dom.h('thead')
+            header_row = dom.h('tr')
+            for col in [self.t('factor_name', default='因子'), self.t('factor_score', default='均分'), self.t('factor_level', default='等级')]:
+                dom.add(header_row, dom.h('th', text=col))
+            dom.add(thead, header_row)
+            dom.add(table, thead)
+            
+            tbody = dom.h('tbody')
+            for dim in payload.get('dimensions', []):
+                row = dom.h('tr')
+                dom.add(row, dom.h('td', text=dim['name']))
+                dom.add(row, dom.h('td', text=str(dim['mean'])))
+                level_cell = dom.h('td', text=dim['level'])
+                level_cell.style.color = dim['color']
+                dom.add(row, level_cell)
+                dom.add(tbody, row)
+            dom.add(table, tbody)
+            dom.add(holder, table)
+            
+            try:
+                await self.ensure_plotly_python()
+                # 构造雷达图数据
+                factors = scale.get('factors', [])
+                labels = [f['name'][self.lang] for f in factors if f.get('inRadar', True)]
+                values = []
+                levels = []
+                for f in factors:
+                    if not f.get('inRadar', True):
+                        continue
+                    dim = next((d for d in payload['dimensions'] if d['code'] == f['code']), None)
+                    if dim:
+                        values.append(dim['mean'])
+                        levels.append(dim['level'])
+                
+                fig_radar = charts.radar_figure(
+                    None,  # dims 参数未使用
+                    labels=labels,
+                    values=values,
+                    levels=levels,
+                    min_value=1.0,
+                    max_value=5.0,
+                    threshold=2.0,
+                    title=self.t('chart_radar_title', default='因子雷达图'),
+                )
+                await js.window.PSY.chart.render(radar_node, to_js(json.loads(figures_to_json(fig_radar)),
+                                                                   dict_converter=js.Object.fromEntries))
+            except Exception as exc:
+                dom.set_badge('warn', self.t('chart_fallback_note'))
+                dom.add(holder, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
+        
+        else:
+            # 单维度量表渲染柱状图 + 档位条
+            dom.add(holder, dom.h('h2', text=self.t('chart_item_title')))
+            plotly_node = dom.h('div', cls='chart-holder', el_id='chart-items')
+            band_node = dom.h('div', cls='chart-holder', el_id='chart-band')
+            dom.add(holder, plotly_node, band_node)
+            self.chart_nodes.extend([plotly_node, band_node])
 
-        try:
-            await self.ensure_plotly_python()
-            fig_items = charts.item_bar_figure(self.rehydrate(scale, items, payload), items, t=self.ui.t,
-                                               lang_labels={'answered': self.t('chart_item_answered')})
-            fig_band = charts.band_position_figure(self.rehydrate(scale, items, payload), scale, t=self.ui.t)
-            await js.window.PSY.chart.render(plotly_node, to_js(json.loads(figures_to_json(fig_items)),
-                                                               dict_converter=js.Object.fromEntries))
-            await js.window.PSY.chart.render(band_node, to_js(json.loads(figures_to_json(fig_band)),
-                                                              dict_converter=js.Object.fromEntries))
-        except Exception as exc:
-            dom.set_badge('warn', self.t('chart_fallback_note'))
-            self.render_bar_fallback(holder, items, payload)
-            dom.add(holder, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
+            try:
+                await self.ensure_plotly_python()
+                fig_items = charts.item_bar_figure(self.rehydrate(scale, items, payload), items, t=self.ui.t,
+                                                   lang_labels={'answered': self.t('chart_item_answered')})
+                fig_band = charts.band_position_figure(self.rehydrate(scale, items, payload), scale, t=self.ui.t)
+                await js.window.PSY.chart.render(plotly_node, to_js(json.loads(figures_to_json(fig_items)),
+                                                                   dict_converter=js.Object.fromEntries))
+                await js.window.PSY.chart.render(band_node, to_js(json.loads(figures_to_json(fig_band)),
+                                                                  dict_converter=js.Object.fromEntries))
+            except Exception as exc:
+                dom.set_badge('warn', self.t('chart_fallback_note'))
+                self.render_bar_fallback(holder, items, payload)
+                dom.add(holder, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
+        
+        dom.add(root, holder)
 
     def rehydrate(self, scale, items, payload):
         """从存储结果重建 ScoreResult，供图表层使用（不再重复计分）。"""
@@ -359,7 +423,8 @@ class Shell:
             scale_id=payload['scaleId'], method=payload['method'], language=payload['language'],
             raw_total=payload['raw_total'], report_score=payload['report_score'], mean=payload['mean'],
             band_index=payload['band_index'], band=band, item_count=payload['item_count'],
-            answers=payload['answers'], flags=payload.get('flags', []), extra=payload.get('extra', {}),
+            answers=payload['answers'], flags=payload.get('flags', []),
+            dimensions=payload.get('dimensions', []), extra=payload.get('extra', {}),
         )
 
     def render_bar_fallback(self, holder, items, payload):

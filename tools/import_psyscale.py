@@ -47,14 +47,74 @@ def load_reference(scale_id: str):
 
 
 def fingerprint_items(items):
-    return [(it.q_id, len(it.options), [o.value for o in it.options], it.dimension) for it in items]
+    return [(it.q_id, len(it.options), [o.value for o in it.options]) for it in items]
+
+
+def chinese_to_factor_code(name: str) -> str:
+    """中文名→因子码（snake_case 英文）"""
+    mapping = {
+        "躯体化": "somatization",
+        "身體化": "somatization",
+        "强迫": "obsessive",
+        "強迫": "obsessive",
+        "强迫症状": "obsessive",
+        "強迫症狀": "obsessive",
+        "人际敏感": "interpersonal",
+        "人際敏感": "interpersonal",
+        "抑郁": "depression",
+        "抑鬱": "depression",
+        "焦虑": "anxiety",
+        "焦慮": "anxiety",
+        "敌对": "hostility",
+        "敵對": "hostility",
+        "恐怖": "phobic",
+        "偏执": "paranoid",
+        "偏執": "paranoid",
+        "精神病性": "psychoticism",
+        "其他": "additional",
+    }
+    return mapping.get(name, name.lower().replace(" ", "_"))
+
+
+def extract_factors(parsed):
+    """从简繁两份 CSV 提取因子信息，生成 factors 数组"""
+    # 建立题号→繁体维度名的映射
+    dim_tw_by_qid = {it.q_id: it.dimension for it in parsed["zh-TW"]}
+    
+    # 用简体的 dimension 列作为 key
+    dims_cn = [it.dimension for it in parsed["zh-CN"]]
+    
+    # 统计每个因子的题数（用简体的因子名）
+    from collections import Counter
+    dim_counts = Counter(dims_cn)
+    
+    # 生成 factors 数组（按出现顺序）
+    factors = []
+    seen = set()
+    for item in parsed["zh-CN"]:
+        dim_name = item.dimension
+        if dim_name and dim_name not in seen:
+            seen.add(dim_name)
+            code = chinese_to_factor_code(dim_name)
+            # 从繁体 CSV 里找同一题的繁体维度名
+            dim_name_tw = dim_tw_by_qid.get(item.q_id, dim_name)
+            factors.append({
+                "code": code,
+                "name": {
+                    "zh-CN": dim_name,
+                    "zh-TW": dim_name_tw,
+                },
+                "expectedCount": dim_counts[dim_name],
+            })
+    
+    return factors
 
 
 def build_scale(scale_id, refs, *, source_commit, raw_factor, review_notes):
     cn, tw = refs["zh-CN"]["basic"], refs["zh-TW"]["basic"]
     parsed = {lang: parse_items(refs[lang]["csv"]) for lang in LANGS}
 
-    # 1) 跨语言题目结构必须一致
+    # 1) 跨语言题目结构必须一致（不比对 dimension 字面，只比对结构列）
     fp_cn, fp_tw = fingerprint_items(parsed["zh-CN"]), fingerprint_items(parsed["zh-TW"])
     if fp_cn != fp_tw:
         diffs = [i for i, (a, b) in enumerate(zip(fp_cn, fp_tw)) if a != b]
@@ -63,7 +123,11 @@ def build_scale(scale_id, refs, *, source_commit, raw_factor, review_notes):
     # 2) 分值值域
     total_min, total_max, step = score_range(parsed["zh-CN"])
 
-    # 3) 档位：以简体为骨架，检查繁体的 min/max/color 完全一致后合并文案
+    # 3) 提取因子信息（多维度量表）
+    scoring_type = cn.get("scoring", {}).get("type", "sum")
+    factors = extract_factors(parsed) if scoring_type == "dimensionSum" else None
+
+    # 4) 档位：以简体为骨架，检查繁体的 min/max/color 完全一致后合并文案
     bands_cn, bands_tw = cn["interpretation"], tw["interpretation"]
     if len(bands_cn) != len(bands_tw):
         raise SystemExit("简繁解读表档位数量不一致，停止导入")
@@ -79,7 +143,6 @@ def build_scale(scale_id, refs, *, source_commit, raw_factor, review_notes):
             "advice": {"zh-CN": a["advice"], "zh-TW": b["advice"]},
         })
 
-    scoring_type = cn.get("scoring", {}).get("type", "sum")
     scale = {
         "schema": 2,
         "id": scale_id,
@@ -101,22 +164,32 @@ def build_scale(scale_id, refs, *, source_commit, raw_factor, review_notes):
             "method": METHOD_MAP.get(scoring_type, scoring_type),
             # 闭区间 + 无缝校验：psyScale 用 score<max 命中却在配置里写成 min..max 连续整数，
             # 导致每档上界落入兜底分支。这里把语义显式写进配置并强制校验。
-            "interval": "closed",
+            # dimension_sum 用半开区间（因子均分是连续量）
+            "interval": "half_open" if scoring_type == "dimensionSum" else "closed",
             "transform": {"raw_factor": raw_factor, "report_round": 0},
         },
         "bands": bands,
         "flags": [],
-        "provenance": {
-            "source_project": "psyScale",
-            "source_snapshot": "vendor/psyscale-ref",
-            "source_commit": source_commit,
-            "imported_at": date.today().isoformat(),
-            "imported_by": "tools/import_psyscale.py",
-            "review_notes": review_notes,
-        },
+    }
+    
+    # 多维度量表加 factors 字段
+    if factors:
+        scale["factors"] = factors
+    
+    scale["provenance"] = {
+        "source_project": "psyScale",
+        "source_snapshot": "vendor/psyscale-ref",
+        "source_commit": source_commit,
+        "imported_at": date.today().isoformat(),
+        "imported_by": "tools/import_psyscale.py",
+        "review_notes": review_notes,
     }
 
-    validate(scale, score_min=total_min, score_max=total_max, step=step)
+    # dimension_sum 的 validate 用因子均分值域（1-5），不是总分值域
+    if scoring_type == "dimensionSum":
+        validate(scale, score_min=1.0, score_max=5.0, step=None)
+    else:
+        validate(scale, score_min=total_min, score_max=total_max, step=step)
     return scale, parsed, (total_min, total_max, step)
 
 
@@ -193,8 +266,30 @@ def main():
     out = ROOT / "data" / "scales" / args.scale
     out.mkdir(parents=True, exist_ok=True)
     (out / "scale.json").write_text(json.dumps(scale, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    
+    # 写入 CSV，多维度量表需要把 dimension 列转换成因子码
     for lang in LANGS:
-        (out / f"items.{lang}.csv").write_text(refs[lang]["csv"], encoding="utf-8")
+        if scale["scoring"]["method"] == "dimension_sum":
+            # 解析原始 CSV，转换 dimension 列
+            import csv
+            import io
+            reader = csv.DictReader(io.StringIO(refs[lang]["csv"]))
+            rows = list(reader)
+            
+            # 转换 dimension 列
+            for row in rows:
+                if "dimension" in row and row["dimension"]:
+                    row["dimension"] = chinese_to_factor_code(row["dimension"])
+            
+            # 重新生成 CSV
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=reader.fieldnames, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(rows)
+            (out / f"items.{lang}.csv").write_text(output.getvalue(), encoding="utf-8")
+        else:
+            # 单维度量表直接写入原始 CSV
+            (out / f"items.{lang}.csv").write_text(refs[lang]["csv"], encoding="utf-8")
 
     index_path = ROOT / "data" / "scales" / "index.json"
     ids = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else []

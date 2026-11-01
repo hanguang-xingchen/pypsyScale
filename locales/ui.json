@@ -42,7 +42,12 @@
     "chart_band_title": "结果落在哪一档",
     "chart_here": "本次",
     "disclaimer": "本结果仅供参考，不构成医学诊断。如有疑虑请咨询专业人士。",
-    "chart_fallback_note": "图表引擎未就绪，已用简化条形呈现"
+    "chart_fallback_note": "图表引擎未就绪，已用简化条形呈现",
+    "chart_radar_title": "因子雷达图",
+    "chart_factor_title": "因子明细",
+    "factor_name": "因子",
+    "factor_score": "均分",
+    "factor_level": "等级"
   },
   "zh-TW": {
     "app_title": "psyCore 實驗版",
@@ -87,6 +92,11 @@
     "chart_band_title": "結果落在哪一檔",
     "chart_here": "本次",
     "disclaimer": "本結果僅供參考，不構成醫學診斷。如有疑慮請諮詢專業人士。",
-    "chart_fallback_note": "圖表引擎未就緒，已用簡化條形呈現"
+    "chart_fallback_note": "圖表引擎未就緒，已用簡化條形呈現",
+    "chart_radar_title": "因子雷達圖",
+    "chart_factor_title": "因子明細",
+    "factor_name": "因子",
+    "factor_score": "均分",
+    "factor_level": "等級"
   }
 }

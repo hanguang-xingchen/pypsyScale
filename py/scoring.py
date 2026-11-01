@@ -119,14 +119,26 @@ def score_scale(scale, items, answers, *, language="zh-CN", check_schema=True):
     if language not in scale["title"]:
         raise ScoringError(f"量表缺少 {language} 语言版本")
 
+    method = scale["scoring"]["method"]
+    
     if check_schema:
         total_min, total_max, step = score_range(items)
-        validate(scale, score_min=total_min, score_max=total_max, step=step)
+        # dimension_sum 用因子均分值域（1-5），不是总分值域
+        if method == "dimension_sum":
+            validate(scale, score_min=1.0, score_max=5.0, step=None)
+        else:
+            validate(scale, score_min=total_min, score_max=total_max, step=step)
 
-    method = scale["scoring"]["method"]
-    if method != "sum":
-        raise ScoringError(f"本版切片只实现 sum，dimension_sum 属于下一里程碑：{method}")
+    if method == "sum":
+        return _score_sum(scale, items, answers, language)
+    elif method == "dimension_sum":
+        return _score_dimension_sum(scale, items, answers, language)
+    else:
+        raise ScoringError(f"未知的计分方法：{method}")
 
+
+def _score_sum(scale, items, answers, language):
+    """单维度计分"""
     interval = scale["scoring"]["interval"]
     by_id = _normalize_answers(scale, items, answers)
     raw_total = sum(by_id[it.q_id] for it in items)
@@ -141,7 +153,7 @@ def score_scale(scale, items, answers, *, language="zh-CN", check_schema=True):
 
     return ScoreResult(
         scale_id=scale["id"],
-        method=method,
+        method="sum",
         language=language,
         raw_total=int(raw_total) if float(raw_total).is_integer() else raw_total,
         report_score=report_score,
@@ -152,4 +164,72 @@ def score_scale(scale, items, answers, *, language="zh-CN", check_schema=True):
         answers=ordered,
         flags=_detect_flags(scale, by_id),
         extra={"interval": interval, "raw_factor": float(transform.get("raw_factor", 1.0))},
+    )
+
+
+def _score_dimension_sum(scale, items, answers, language):
+    """多维度计分：按因子分组，计算各因子均分"""
+    interval = scale["scoring"]["interval"]
+    by_id = _normalize_answers(scale, items, answers)
+    
+    # 按因子分组
+    factor_scores = {}
+    for item in items:
+        dim = item.dimension
+        if dim not in factor_scores:
+            factor_scores[dim] = []
+        factor_scores[dim].append(by_id[item.q_id])
+    
+    # 计算各因子均分和等级
+    dimensions = []
+    total_score = 0
+    total_count = 0
+    
+    for factor in scale["factors"]:
+        code = factor["code"]
+        scores = factor_scores.get(code, [])
+        if not scores:
+            continue
+        
+        factor_score = sum(scores)
+        factor_mean = factor_score / len(scores)
+        band_index, band = find_band(factor_mean, scale["bands"], interval=interval)
+        
+        dimensions.append({
+            "code": code,
+            "name": factor["name"][language],
+            "score": int(factor_score) if float(factor_score).is_integer() else factor_score,
+            "count": len(scores),
+            "mean": round(factor_mean, 2),
+            "band_index": band_index,
+            "level": band["level"][language],
+            "color": band["color"],
+            "advice": band["advice"][language],
+        })
+        
+        total_score += factor_score
+        total_count += len(scores)
+    
+    # 计算总分和总均分
+    total_mean = total_score / total_count if total_count > 0 else 0
+    overall_band_index, overall_band = find_band(total_mean, scale["bands"], interval=interval)
+    
+    ordered = [by_id[it.q_id] for it in items]
+    if all(float(v).is_integer() for v in ordered):
+        ordered = [int(v) for v in ordered]
+    
+    return ScoreResult(
+        scale_id=scale["id"],
+        method="dimension_sum",
+        language=language,
+        raw_total=int(total_score) if float(total_score).is_integer() else total_score,
+        report_score=round(total_mean, 2),
+        mean=round(total_mean, 2),
+        band_index=overall_band_index,
+        band=overall_band,
+        item_count=len(items),
+        answers=ordered,
+        flags=_detect_flags(scale, by_id),
+        dimensions=dimensions,
+        extra={"interval": interval},
     )
