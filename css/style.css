@@ -17,10 +17,11 @@
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, var(--pink-50), #fff 42%);
+  background: linear-gradient(135deg, var(--pink-50) 0%, #fff 50%, var(--pink-50) 100%);
   color: var(--ink);
   font: 16px/1.65 -apple-system, "PingFang SC", "Microsoft YaHei", "Noto Sans TC", sans-serif;
   -webkit-text-size-adjust: 100%;
+  min-height: 100vh;
 }
 
 .page, .shell { max-width: 860px; margin: 0 auto; padding: 20px 18px 56px; }
@@ -69,15 +70,87 @@ body {
 .option-item.selected { border-color: var(--pink-500); background: var(--pink-50); }
 .option-item input { accent-color: var(--pink-500); }
 
-.sheet { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
-.sheet-cell {
-  width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center;
-  font-size: 12px; color: var(--ink-soft); background: #f7f7f7; border: 1px solid var(--line);
+/* 答题卡：桌面端右侧可折叠面板（对齐 psyScale） */
+:root { --answer-sheet-w: 330px; }
+
+.answer-sheet {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  transition: right .3s ease;
 }
-.sheet-cell.answered { background: #e8f5e9; color: #2e7d32; cursor: pointer; }
-.sheet-cell.next { cursor: pointer; outline: 1px dashed var(--pink-300); }
-.sheet-cell.current { outline: 2px solid var(--pink-500); }
-.sheet-hint { margin: 0 0 8px; }
+.answer-sheet.collapsed { right: calc(-1 * var(--answer-sheet-w)); }
+
+.answer-sheet-toggle {
+  width: 28px; height: 56px;
+  border: none; border-radius: 8px 0 0 8px;
+  background: #fff; color: var(--pink-500);
+  font-size: 14px; cursor: pointer;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, .08);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.answer-sheet-toggle:hover { background: var(--pink-100); }
+
+.answer-sheet-body {
+  background: #fff;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, .1);
+  padding: 18px 16px;
+  width: var(--answer-sheet-w);
+}
+
+.answer-sheet-header {
+  font-size: .9rem; font-weight: 600; color: var(--ink);
+  margin-bottom: 12px; text-align: center;
+}
+
+.answer-sheet-grid {
+  display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px;
+}
+
+.answer-sheet-item {
+  width: 100%; aspect-ratio: 1; border-radius: 50%;
+  font-size: .8rem; font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid transparent; cursor: default;
+  background: #f7f7f7; color: var(--ink-soft);
+  transition: background .15s ease, border-color .15s ease;
+}
+.answer-sheet-item.answered { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; cursor: pointer; }
+.answer-sheet-item.answered:hover { background: #d7efd9; }
+.answer-sheet-item.next { cursor: pointer; border: 2px dashed var(--pink-300); background: #fff; color: var(--ink-soft); }
+.answer-sheet-item.current { border-color: var(--pink-500); background: var(--pink-100); color: var(--pink-500); font-weight: 700; }
+.answer-sheet-item.current.answered { border-color: var(--pink-500); background: var(--pink-100); color: var(--pink-500); }
+
+.answer-sheet-legend {
+  display: flex; justify-content: center; gap: 12px;
+  margin-top: 12px; font-size: .75rem; color: var(--ink-soft);
+}
+.answer-sheet-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.answer-sheet-legend span::before {
+  content: ''; width: 11px; height: 11px; border-radius: 50%; display: inline-block;
+}
+.legend-answered::before { background: #e8f5e9; border: 1.5px solid #2e7d32; }
+.legend-current::before { background: var(--pink-100); border: 1.5px solid var(--pink-500); }
+.legend-empty::before { background: #f7f7f7; border: 1.5px solid var(--line); }
+
+@media (min-width: 1024px) {
+  :root { --answer-sheet-w: 420px; }
+  .answer-sheet-item { font-size: .9rem; }
+  .answer-sheet-grid { gap: 7px; }
+  .answer-sheet-body { padding: 22px 20px; }
+  .answer-sheet-header { font-size: 1rem; }
+  .answer-sheet-toggle { height: 60px; }
+}
+
+@media (max-width: 480px) {
+  .answer-sheet { display: none; }
+}
 
 .score-big { font-size: 52px; font-weight: 700; line-height: 1.1; margin: 4px 0 10px; }
 .level-pill { display: inline-block; color: #fff; border-radius: 999px; padding: 6px 14px; font-size: 15px; }
@@ -106,8 +179,6 @@ body {
   .page-head h1 { font-size: 22px; }
   .score-big { font-size: 44px; }
   .meta-grid { gap: 16px; }
-  .sheet-toggle,
-  .sheet-wrap { display: none; }
 }
 
 /* 因子明细表 */

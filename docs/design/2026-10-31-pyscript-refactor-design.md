@@ -112,13 +112,23 @@ M4 结论：是否值得作为主线，以及升线的前置条件。
 
 原「非目标：不改答题交互形态」在实施中放宽：答题卡（题目导航格网）改为与 psyScale 一致的折叠形式。
 
-- 桌面端：答题卡默认收起，卡片内提供「答题卡」开关按钮展开/收起。
-- 移动端（≤560px）：答题卡开关与面板整体不显示，保留上一题/下一题按钮导航。
+- 桌面端：右侧固定可折叠面板（`<aside class="answer-sheet collapsed">`），默认收起、只露 `▶`
+  箭头按钮；展开后为「答题卡」标题 + 10 列题号网格 + 已答/当前/未答图例。
+- 移动端（≤480px）：整个面板隐藏，保留上一题/下一题按钮导航。
 - 可点范围：已作答题目一律可点回看；当前题的后一题（即使未作答）也可点，用于前进一题。
   更远的未作答题目仍不可跳转，保持逐题推进的答题节奏。
 
 受影响文件：`py/shell.py`（`view_scale` / `render_question` / 新增 `toggle_sheet`）、
-`css/style.css`（`.sheet-cell.next` 提示态与移动端隐藏）、`locales/ui.json`（答题卡提示文案）。
+`css/style.css`（`.answer-sheet*` 面板与 `.next` 提示态、480px 断点隐藏、`body` 背景渐变）、
+`locales/ui.json`（答题卡与图例文案）。
+
+- 背景：`body` 由 `linear-gradient(180deg, pink-50, #fff 42%)` 的顶部粉转纯白截断，改为 psyScale 的
+  `linear-gradient(135deg, pink-50 0%, #fff 50%, pink-50 100%)`（`min-height: 100vh`），消除页面
+  顶部到底部的「割裂」感。
+
+**反思（2026-11-06）**：以 psyScale 为对齐基准时，只学视觉样式（折叠面板布局、题号网格、图例、
+背景渐变），不搬运与 pypsyScale 无关的功能（如 GitHub star、阳性预警 flag 等）。后续「对齐 psyScale」
+类改动默认只做样式层对齐，交互与判定逻辑仍以 pypsyScale 自身设计为准。
 
 ---
 

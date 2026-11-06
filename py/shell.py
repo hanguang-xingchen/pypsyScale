@@ -191,19 +191,26 @@ class Shell:
         q_index = dom.h('p', cls='q-index', el_id='q-index')
         q_text = dom.h('p', cls='q-text', el_id='q-text')
         options = dom.h('div', cls='option-list', el_id='option-list')
-        sheet_toggle = dom.h('button', cls='btn btn-ghost sheet-toggle', el_id='sheet-toggle',
-                             text=self.t('answer_sheet') + ' ▸',
-                             attrs={'type': 'button', 'aria-expanded': 'false'})
-        sheet = dom.h('div', cls='sheet', el_id='sheet')
-        sheet_hint = dom.h('p', cls='hint sheet-hint', text=self.t('answer_sheet_hint'))
-        sheet_wrap = dom.h('div', cls='sheet-wrap', el_id='sheet-wrap', hidden=True)
-        dom.add(sheet_wrap, sheet_hint, sheet)
+        sheet = dom.h('aside', cls='answer-sheet collapsed', el_id='answer-sheet')
+        sheet_toggle = dom.h('button', cls='answer-sheet-toggle', el_id='answer-sheet-toggle',
+                             text='▶', attrs={'type': 'button', 'aria-expanded': 'false',
+                                              'title': self.t('answer_sheet')})
+        sheet_body = dom.h('div', cls='answer-sheet-body')
+        sheet_header = dom.h('div', cls='answer-sheet-header', text=self.t('answer_sheet'))
+        sheet_grid = dom.h('div', cls='answer-sheet-grid', el_id='answer-sheet-grid')
+        legend = dom.h('div', cls='answer-sheet-legend')
+        for cls, key in (('legend-answered', 'legend_answered'),
+                         ('legend-current', 'legend_current'),
+                         ('legend-empty', 'legend_empty')):
+            dom.add(legend, dom.h('span', cls=cls, text=self.t(key)))
+        dom.add(sheet_body, sheet_header, sheet_grid, legend)
+        dom.add(sheet, sheet_toggle, sheet_body)
         nav = dom.h('div', cls='btn-row')
         prev = dom.h('button', cls='btn btn-ghost', el_id='btn-prev', text=self.t('btn_prev'))
         nxt = dom.h('button', cls='btn btn-primary', el_id='btn-next', text=self.t('btn_next'))
         dom.add(nav, prev, nxt)
-        dom.add(head, q_index, progress, q_text, options, sheet_toggle, sheet_wrap, nav)
-        dom.add(root, head)
+        dom.add(head, q_index, progress, q_text, options, nav)
+        dom.add(root, head, sheet)
 
         self.bag.on(prev, 'click', lambda *_: spawn(self.move(-1)))
         self.bag.on(nxt, 'click', lambda *_: spawn(self.advance()))
@@ -232,18 +239,18 @@ class Shell:
             self.bag.on(row, 'click', lambda _ev, value=opt.value, qid=item.q_id: spawn(self.pick(qid, value)))
             dom.add(list_node, row)
 
-        sheet_node = dom.clear(dom.by_id('sheet'))
+        sheet_node = dom.clear(dom.by_id('answer-sheet-grid'))
         for pos, each in enumerate(items):
             answered = str(each.q_id) in draft['answers']
             is_next = pos == idx + 1
-            cls = 'sheet-cell'
+            cls = 'answer-sheet-item'
             if answered:
                 cls += ' answered'
             elif is_next:
                 cls += ' next'
             if pos == idx:
                 cls += ' current'
-            cell = dom.h('div', cls=cls, text=str(each.q_id))
+            cell = dom.h('div', cls=cls, text=str(pos + 1))
             if answered or is_next:
                 self.bag.on(cell, 'click', lambda _ev, target=pos: spawn(self.jump(target)))
             dom.add(sheet_node, cell)
@@ -254,11 +261,12 @@ class Shell:
         dom.by_id('btn-prev').disabled = idx == 0
 
     def toggle_sheet(self):
-        wrap = dom.by_id('sheet-wrap')
-        toggle = dom.by_id('sheet-toggle')
-        wrap.hidden = not wrap.hidden
-        toggle.textContent = self.t('answer_sheet') + (' ▾' if not wrap.hidden else ' ▸')
-        toggle.setAttribute('aria-expanded', 'true' if not wrap.hidden else 'false')
+        sheet = dom.by_id('answer-sheet')
+        toggle = dom.by_id('answer-sheet-toggle')
+        sheet.classList.toggle('collapsed')
+        now_collapsed = sheet.classList.contains('collapsed')
+        toggle.textContent = '▶' if now_collapsed else '◀'
+        toggle.setAttribute('aria-expanded', 'false' if now_collapsed else 'true')
 
     async def pick(self, qid, value):
         state = self.current
