@@ -124,8 +124,8 @@ body {
 .answer-sheet-item.answered { background: #e8f5e9; color: #2e7d32; border-color: #2e7d32; cursor: pointer; }
 .answer-sheet-item.answered:hover { background: #d7efd9; }
 .answer-sheet-item.next { cursor: pointer; border: 2px dashed var(--pink-300); background: #fff; color: var(--ink-soft); }
-.answer-sheet-item.current { border-color: var(--pink-500); background: var(--pink-100); color: var(--pink-500); font-weight: 700; }
-.answer-sheet-item.current.answered { border-color: var(--pink-500); background: var(--pink-100); color: var(--pink-500); }
+.answer-sheet-item.current { border: 2px dashed var(--pink-500); background: #fff; color: var(--pink-500); font-weight: 700; }
+.answer-sheet-item.current.answered { border: 2px solid var(--pink-500); background: var(--pink-100); color: var(--pink-500); font-weight: 700; cursor: pointer; }
 
 .answer-sheet-legend {
   display: flex; justify-content: center; gap: 12px;

@@ -240,16 +240,21 @@ class Shell:
             dom.add(list_node, row)
 
         sheet_node = dom.clear(dom.by_id('answer-sheet-grid'))
+        # 前沿 = 首个未作答题；已在题为虚线、刚做完为粉色、已过去为绿色、前沿下一题为灰色虚线
+        frontier = next((p for p, it in enumerate(items) if str(it.q_id) not in draft['answers']), len(items))
         for pos, each in enumerate(items):
             answered = str(each.q_id) in draft['answers']
-            is_next = pos == idx + 1
+            is_current = pos == idx
+            is_next = pos == frontier and not is_current
             cls = 'answer-sheet-item'
-            if answered:
+            if is_current and answered:
+                cls += ' current answered'
+            elif is_current:
+                cls += ' current'
+            elif answered:
                 cls += ' answered'
             elif is_next:
                 cls += ' next'
-            if pos == idx:
-                cls += ' current'
             cell = dom.h('div', cls=cls, text=str(pos + 1))
             if answered or is_next:
                 self.bag.on(cell, 'click', lambda _ev, target=pos: spawn(self.jump(target)))
