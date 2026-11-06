@@ -119,9 +119,14 @@ def validate(scale, *, score_min=None, score_max=None, step=None):
 
 
 def find_band(score, bands, *, interval="closed"):
-    """按声明的区间语义命中解读档位。命中不了就抛错，绝不静默返回最后一档。"""
+    """按声明的区间语义命中解读档位。命中不了就抛错，绝不静默返回最后一档。
+
+    half_open 下除末档外均为 [min, max)；末档按闭区间 [min, max] 处理，
+    否则值域上界（如因子均分 5.0）永远落不进最后半开档。
+    """
+    last_i = len(bands) - 1
     for i, band in enumerate(bands):
-        if interval == "closed":
+        if interval == "closed" or (interval == "half_open" and i == last_i):
             if band["min"] <= score <= band["max"]:
                 return i, band
         else:

@@ -191,16 +191,23 @@ class Shell:
         q_index = dom.h('p', cls='q-index', el_id='q-index')
         q_text = dom.h('p', cls='q-text', el_id='q-text')
         options = dom.h('div', cls='option-list', el_id='option-list')
+        sheet_toggle = dom.h('button', cls='btn btn-ghost sheet-toggle', el_id='sheet-toggle',
+                             text=self.t('answer_sheet') + ' ▸',
+                             attrs={'type': 'button', 'aria-expanded': 'false'})
         sheet = dom.h('div', cls='sheet', el_id='sheet')
+        sheet_hint = dom.h('p', cls='hint sheet-hint', text=self.t('answer_sheet_hint'))
+        sheet_wrap = dom.h('div', cls='sheet-wrap', el_id='sheet-wrap', hidden=True)
+        dom.add(sheet_wrap, sheet_hint, sheet)
         nav = dom.h('div', cls='btn-row')
         prev = dom.h('button', cls='btn btn-ghost', el_id='btn-prev', text=self.t('btn_prev'))
         nxt = dom.h('button', cls='btn btn-primary', el_id='btn-next', text=self.t('btn_next'))
         dom.add(nav, prev, nxt)
-        dom.add(head, q_index, progress, q_text, options, sheet, nav)
+        dom.add(head, q_index, progress, q_text, options, sheet_toggle, sheet_wrap, nav)
         dom.add(root, head)
 
         self.bag.on(prev, 'click', lambda *_: spawn(self.move(-1)))
         self.bag.on(nxt, 'click', lambda *_: spawn(self.advance()))
+        self.bag.on(sheet_toggle, 'click', lambda *_: self.toggle_sheet())
 
         self.render_question()
 
@@ -228,9 +235,16 @@ class Shell:
         sheet_node = dom.clear(dom.by_id('sheet'))
         for pos, each in enumerate(items):
             answered = str(each.q_id) in draft['answers']
-            cell = dom.h('div', cls='sheet-cell' + (' answered' if answered else '') + (' current' if pos == idx else ''),
-                         text=str(each.q_id))
+            is_next = pos == idx + 1
+            cls = 'sheet-cell'
             if answered:
+                cls += ' answered'
+            elif is_next:
+                cls += ' next'
+            if pos == idx:
+                cls += ' current'
+            cell = dom.h('div', cls=cls, text=str(each.q_id))
+            if answered or is_next:
                 self.bag.on(cell, 'click', lambda _ev, target=pos: spawn(self.jump(target)))
             dom.add(sheet_node, cell)
 
@@ -238,6 +252,13 @@ class Shell:
         dom.by_id('btn-next').textContent = self.t('btn_submit') if last else self.t('btn_next')
         dom.by_id('btn-next').disabled = selected is None
         dom.by_id('btn-prev').disabled = idx == 0
+
+    def toggle_sheet(self):
+        wrap = dom.by_id('sheet-wrap')
+        toggle = dom.by_id('sheet-toggle')
+        wrap.hidden = not wrap.hidden
+        toggle.textContent = self.t('answer_sheet') + (' ▾' if not wrap.hidden else ' ▸')
+        toggle.setAttribute('aria-expanded', 'true' if not wrap.hidden else 'false')
 
     async def pick(self, qid, value):
         state = self.current
@@ -276,8 +297,12 @@ class Shell:
     async def submit(self):
         state = self.current
         scale, items, answers = state['scale'], state['items'], state['draft']['answers']
-        typed = {int(k): v for k, v in answers.items()}
-        result = score_scale(scale, items, typed, language=self.lang)
+        try:
+            typed = {int(k): v for k, v in answers.items()}
+            result = score_scale(scale, items, typed, language=self.lang)
+        except (ScaleSchemaError, ScoringError) as exc:
+            self.render_error(str(exc))
+            return
         payload = result.json()
         payload['scaleTitle'] = self.localized(scale['title'])
         await self.store.save_result(self.scale_id, payload)
