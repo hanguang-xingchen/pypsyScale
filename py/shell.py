@@ -372,6 +372,10 @@ class Shell:
         if scale['scoring']['method'] == 'dimension_sum':
             dom.add(holder, dom.h('h2', text=self.t('chart_radar_title')))
             radar_node = dom.h('div', cls='chart-holder', el_id='chart-radar')
+            radar_loading = dom.h('div', cls='chart-loading')
+            dom.add(radar_loading, dom.h('div', cls='spinner'),
+                    dom.h('p', cls='hint', text=self.t('chart_loading')))
+            dom.add(radar_node, radar_loading)
             dom.add(holder, radar_node)
             self.chart_nodes.append(radar_node)
             
@@ -421,9 +425,11 @@ class Shell:
                     threshold=2.0,
                     title=self.t('chart_radar_title'),
                 )
+                dom.clear(radar_node)
                 await js.window.PSY.chart.render(radar_node, to_js(json.loads(figures_to_json(fig_radar)),
                                                                    dict_converter=js.Object.fromEntries))
             except Exception as exc:
+                dom.clear(radar_node)
                 dom.set_badge('warn', self.t('chart_fallback_note'))
                 dom.add(holder, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
         

@@ -216,3 +216,10 @@ body {
 }
 .collapse-toggle:hover { background: var(--pink-100); }
 .collapse-body { margin-top: 10px; }
+
+/* 图表加载占位（转圈 + 文案，对齐开机 boot 面板） */
+.chart-loading {
+  text-align: center;
+  padding: 24px 12px;
+  color: var(--ink-soft);
+}
