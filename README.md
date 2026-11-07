@@ -27,6 +27,38 @@ pypsyScale 是 [psyScale](https://github.com/hanguang-xingchen/psyScale) 的实�
 3. 首次加载需要下载运行时（约 10 MB），请耐心等待
 4. 完成答题后查看结果，可下载 JSON 或 CSV 报告
 
+## 命令行版本（TUI）
+
+不需要安装任何东西，一条命令即可在终端里启动量表答题（Linux / macOS，需系统自带 Python 3）：
+
+```bash
+python3 -c "$(curl -fsSL https://hanguangxingchen.top/pypsyScale/tui/bootstrap.py)"
+```
+
+原理：上面的命令只拉一个引导脚本，由它把所需的标准库模块下载到临时目录后启动 TUI；量表定义与题目按需从 `https://hanguangxingchen.top/pypsyScale` 现场请求。作答只保存在当前进程内存里，退出即清，不落盘、不装包。
+
+### 操作
+
+- `↑`/`↓` 或 `j`/`k` 选择量表，`回车` 进入；
+- 数字键 `1-9` 选择选项（选完自动进入下一题）；
+- `←`/`→` 或 `P`/`N` 切换题目，末题按 `回车` 提交出结果；
+- `b` 返回列表，`q` 随时退出。
+
+### 界面示意
+
+```text
+pypsyScale 量表（终端版）
+
+   1. PHQ-9 抑郁症筛查量表
+ ► 2. GAD-7 广泛性焦虑筛查
+   3. CES-D 流调中心抑郁量表
+        ...
+
+↑/↓ 或 j/k 选择   回车 进入   q 退出
+```
+
+> **换源 / 本地运行**：设置环境变量 `PYSYSCALE_BASE` 指向另一个静态根（镜像）即可。
+
 ## 隐私说明
 
 - 所有数据仅保存在你的浏览器本地（IndexedDB）
