@@ -75,7 +75,7 @@ engine_ms = int((time.perf_counter() - t0) * 1000)
 # plotly 未内置在 Pyodide，需 micropip 从 PyPI 取纯 Python wheel
 import micropip
 t1 = time.perf_counter()
-await micropip.install("plotly", quiet=True)
+await micropip.install("plotly")
 install_ms = int((time.perf_counter() - t1) * 1000)
 
 import charts

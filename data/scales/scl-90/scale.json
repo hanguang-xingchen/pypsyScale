@@ -169,7 +169,8 @@
         "zh-CN": "其他",
         "zh-TW": "其他"
       },
-      "expectedCount": 7
+      "expectedCount": 7,
+      "inRadar": false
     }
   ],
   "provenance": {

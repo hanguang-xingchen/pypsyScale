@@ -1,10 +1,8 @@
-"""Plotly 出图（Python 侧正式 import plotly，按既定选型）。
+"""Plotly 出图（Python 侧 import plotly，按既定选型）。
 
-M1 只要求证明两件事：
-1. plotly 能在 Pyodide 里 micropip 装上并构造 figure；
-2. figure 能序列化成 JSON，交给页面侧 plotly.js 渲染。
-
-雷达图（SCL-90 Scatterpolar）属于 M2，这里先不放，避免一次改太多变量。
+构造出的 figure 序列化成 JSON 后交给页面侧 plotly.js 渲染：
+- item_bar_figure / band_position_figure：单维度量表的逐题柱状图与档位条；
+- radar_figure：多维度量表（如 SCL-90）的因子雷达图。
 """
 from __future__ import annotations
 
@@ -113,12 +111,12 @@ def band_position_figure(result, scale, *, t):
     return fig
 
 
-def radar_figure(dims, *, labels, values, levels=None, colors=None, min_value=1.0, max_value=5.0,
+def radar_figure(labels, *, values, levels=None, min_value=1.0, max_value=5.0,
                  threshold=None, title=None, hover_suffix=''):
-    """极坐标雷达：M2 的 SCL-90 十维图，提前在 WASM 里验证可行性。
+    """极坐标雷达：各因子均分的闭合多边形 + 可选阈值环。
 
-    dims/labels：维度名；values：各维因子均分；levels：各维等级文本（进 hover）。
-    闭合用首点重复；阈值环是一条恒定半径的虚线，不参与填充。
+    labels：轴标签；values：各因子均分；levels：各因子等级文本（进 hover）。
+    闭合用首点重复；阈值环是一条恒定半径的虚线，不参与填充、不参与 hover。
     """
     go = _require_plotly()
     n = len(labels)
@@ -137,7 +135,7 @@ def radar_figure(dims, *, labels, values, levels=None, colors=None, min_value=1.
     data = [
         go.Scatterpolar(
             r=r, theta=theta, mode='lines+markers', fill='toself',
-            name=title or '', marker=dict(size=7),
+            name=title or '', marker=dict(size=7, color='#f472b6'),
             line=dict(color='#f472b6', width=2),
             fillcolor='rgba(244,114,182,0.15)',
             hovertext=hover, hoverinfo='text',
@@ -160,8 +158,6 @@ def radar_figure(dims, *, labels, values, levels=None, colors=None, min_value=1.
         paper_bgcolor='rgba(0,0,0,0)',
         font=dict(size=11),
     )
-    if colors:
-        fig.data[0].marker.color = '#f472b6'  # 单色描边保持与主题一致，等级色走 hover
     return fig
 
 

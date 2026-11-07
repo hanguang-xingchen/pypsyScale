@@ -370,17 +370,17 @@ class Shell:
         
         # 多维度量表渲染雷达图 + 因子明细表
         if scale['scoring']['method'] == 'dimension_sum':
-            dom.add(holder, dom.h('h2', text=self.t('chart_radar_title', default='因子雷达图')))
+            dom.add(holder, dom.h('h2', text=self.t('chart_radar_title')))
             radar_node = dom.h('div', cls='chart-holder', el_id='chart-radar')
             dom.add(holder, radar_node)
             self.chart_nodes.append(radar_node)
             
             # 因子明细表
-            dom.add(holder, dom.h('h2', text=self.t('chart_factor_title', default='因子明细')))
+            dom.add(holder, dom.h('h2', text=self.t('chart_factor_title')))
             table = dom.h('table', cls='factor-table')
             thead = dom.h('thead')
             header_row = dom.h('tr')
-            for col in [self.t('factor_name', default='因子'), self.t('factor_score', default='均分'), self.t('factor_level', default='等级')]:
+            for col in [self.t('factor_name'), self.t('factor_score'), self.t('factor_level')]:
                 dom.add(header_row, dom.h('th', text=col))
             dom.add(thead, header_row)
             dom.add(table, thead)
@@ -413,14 +413,13 @@ class Shell:
                         levels.append(dim['level'])
                 
                 fig_radar = charts.radar_figure(
-                    None,  # dims 参数未使用
                     labels=labels,
                     values=values,
                     levels=levels,
                     min_value=1.0,
                     max_value=5.0,
                     threshold=2.0,
-                    title=self.t('chart_radar_title', default='因子雷达图'),
+                    title=self.t('chart_radar_title'),
                 )
                 await js.window.PSY.chart.render(radar_node, to_js(json.loads(figures_to_json(fig_radar)),
                                                                    dict_converter=js.Object.fromEntries))
@@ -429,25 +428,31 @@ class Shell:
                 dom.add(holder, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
         
         else:
-            # 单维度量表渲染柱状图 + 档位条
-            dom.add(holder, dom.h('h2', text=self.t('chart_item_title')))
-            plotly_node = dom.h('div', cls='chart-holder', el_id='chart-items')
+            # 单维度量表：档位条常显，逐题得分折叠成「小题分」
             band_node = dom.h('div', cls='chart-holder', el_id='chart-band')
-            dom.add(holder, plotly_node, band_node)
-            self.chart_nodes.extend([plotly_node, band_node])
 
+            fold = dom.h('div', cls='collapse')
+            fold_head = dom.h('button', cls='collapse-toggle', el_id='item-chart-toggle',
+                              text='▶ ' + self.t('chart_item_collapse_title'),
+                              attrs={'type': 'button', 'aria-expanded': 'false'})
+            fold_body = dom.h('div', cls='collapse-body', el_id='item-chart-body', hidden=True)
+            item_node = dom.h('div', cls='chart-holder', el_id='chart-items')
+            dom.add(fold_body, item_node)
+            dom.add(fold, fold_head, fold_body)
+            self.bag.on(fold_head, 'click',
+                        lambda *_e, s=scale, i=items, p=payload: self.toggle_item_chart(s, i, p))
+            dom.add(holder, band_node, fold)
+            self.chart_nodes.extend([band_node, item_node])
+            self._item_chart_rendered = False
+
+            # 档位条先渲染（常显）
             try:
                 await self.ensure_plotly_python()
-                fig_items = charts.item_bar_figure(self.rehydrate(scale, items, payload), items, t=self.ui.t,
-                                                   lang_labels={'answered': self.t('chart_item_answered')})
                 fig_band = charts.band_position_figure(self.rehydrate(scale, items, payload), scale, t=self.ui.t)
-                await js.window.PSY.chart.render(plotly_node, to_js(json.loads(figures_to_json(fig_items)),
-                                                                   dict_converter=js.Object.fromEntries))
                 await js.window.PSY.chart.render(band_node, to_js(json.loads(figures_to_json(fig_band)),
                                                                   dict_converter=js.Object.fromEntries))
             except Exception as exc:
                 dom.set_badge('warn', self.t('chart_fallback_note'))
-                self.render_bar_fallback(holder, items, payload)
                 dom.add(holder, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
         
         dom.add(root, holder)
@@ -465,7 +470,31 @@ class Shell:
             dimensions=payload.get('dimensions', []), extra=payload.get('extra', {}),
         )
 
-    def render_bar_fallback(self, holder, items, payload):
+    def toggle_item_chart(self, scale, items, payload):
+        body = dom.by_id('item-chart-body')
+        head = dom.by_id('item-chart-toggle')
+        expanding = body.hidden
+        body.hidden = not body.hidden
+        head.setAttribute('aria-expanded', 'true' if expanding else 'false')
+        head.textContent = ('▼ ' if expanding else '▶ ') + self.t('chart_item_collapse_title')
+        if expanding and not self._item_chart_rendered:
+            spawn(self.render_item_chart(scale, items, payload))
+
+    async def render_item_chart(self, scale, items, payload):
+        item_node = dom.by_id('chart-items')
+        try:
+            await self.ensure_plotly_python()
+            fig_items = charts.item_bar_figure(self.rehydrate(scale, items, payload), items, t=self.ui.t,
+                                               lang_labels={'answered': self.t('chart_item_answered')})
+            await js.window.PSY.chart.render(item_node, to_js(json.loads(figures_to_json(fig_items)),
+                                                              dict_converter=js.Object.fromEntries))
+        except Exception as exc:
+            dom.set_badge('warn', self.t('chart_fallback_note'))
+            self.render_bar_fallback(item_node, items, payload)
+            dom.add(item_node, dom.h('p', cls='hint', text=f'{type(exc).__name__}: {exc}'))
+        self._item_chart_rendered = True
+
+    def render_bar_fallback(self, target, items, payload):
         grid = dom.h('div', cls='chart-fallback')
         cap = max(max(o.value for o in it.options) for it in items)
         for item, value in zip(items, payload['answers']):
@@ -476,7 +505,7 @@ class Shell:
             dom.add(track, fill)
             dom.add(row, dom.h('span', text=f'Q{item.q_id}'), track, dom.h('span', text=str(value)))
             dom.add(grid, row)
-        dom.add(holder, grid)
+        dom.add(target, grid)
 
     def render_actions(self, root, scale, items, payload):
         bar = dom.h('div', cls='card stack')
@@ -513,9 +542,11 @@ class Shell:
     async def ensure_plotly_python(self):
         if Shell._plotly_ready:
             return
-        import micropip
+        import pyodide_js
 
-        await micropip.install('plotly', quiet=True)
+        await pyodide_js.loadPackage(to_js(['micropip']))
+        import micropip
+        await micropip.install('plotly')
         Shell._plotly_ready = True
 
 

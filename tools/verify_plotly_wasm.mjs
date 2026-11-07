@@ -78,7 +78,7 @@ dims = ['躯体化', '强迫症状', '人际关系敏感', '抑郁', '焦虑', '
 vals = [1.42, 2.80, 1.78, 2.15, 2.60, 1.33, 1.10, 1.90, 2.45, 1.65]
 lvls = ['正常' if v < 2 else '轻度' if v < 3 else '中度' for v in vals]
 t3 = time.perf_counter()
-fig_radar = charts.radar_figure(dims, labels=dims, values=vals, levels=lvls, threshold=2.0,
+fig_radar = charts.radar_figure(labels=dims, values=vals, levels=lvls, threshold=2.0,
                                 title='症状总览', hover_suffix='（因子均分）')
 radar_ms = int((time.perf_counter() - t3) * 1000)
 
